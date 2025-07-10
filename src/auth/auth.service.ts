@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable prettier/prettier */
@@ -15,12 +14,15 @@ import { Auth, UseRole } from './entities/auth.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { jwtConstants } from './constants/jwt.constant';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Auth)
     private readonly userRepository: Repository<Auth>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async registeruser(createUserDto: CreateAuthDto) {
@@ -37,6 +39,8 @@ export class AuthService {
       ...createUserDto,
       password: hashedPassword,
       role: UseRole.USER,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     });
 
     await this.userRepository.save(newUser);
@@ -46,16 +50,16 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.validateUser(email, password);
 
-    // user.loginStatus = true;
-    // const payload = { id: user.id, email: user.email };
+    user.loginStatus = true;
+    const payload = { id: user.id, email: user.email };
     await this.userRepository.save(user);
 
     return {
       message: 'User Login Successfully...!',
-      // token: this.jwtService.sign(payload, {
-      //   secret: jwtConstants.secret,
-      //   expiresIn: '1h',
-      // }),
+      token: this.jwtService.sign(payload, {
+        secret: jwtConstants.secret,
+        expiresIn: '1h',
+      }),
     };
   }
 

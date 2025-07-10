@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './auth/constants/jwt.constant';
 
 @Module({
   imports: [
@@ -24,7 +26,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         };
       },
     }),
-
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: {
+        expiresIn: '1h',
+      },
+    }),
     AuthModule,
   ],
 })

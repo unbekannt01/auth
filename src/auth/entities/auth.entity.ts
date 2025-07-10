@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export enum UseRole {
   USER = 'USER',
@@ -25,4 +25,13 @@ export class Auth {
 
   @Column()
   role: UseRole;
+
+  @Column({ type: 'boolean', default: false })
+  loginStatus: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

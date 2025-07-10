@@ -39,8 +39,8 @@ export class AuthService {
       ...createUserDto,
       password: hashedPassword,
       role: UseRole.USER,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     await this.userRepository.save(newUser);

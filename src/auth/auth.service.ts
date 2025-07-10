@@ -80,4 +80,24 @@ export class AuthService {
 
     return user;
   }
+
+  async getAllUserData() {
+    const users = await this.userRepository.find();
+    if (users.length === 0) {
+      throw new NotFoundException('No users found...!');
+    }
+    return users.map(user => {
+      return {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        // password: user.password,
+        role: user.role,
+        loginStatus: user.loginStatus,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+    });
+  }
 }
